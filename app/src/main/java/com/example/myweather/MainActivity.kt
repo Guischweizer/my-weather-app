@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.AsyncTask
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
@@ -26,10 +25,9 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-
     val API: String = "cf2e31a47b54972f5f7f373337350593"
-    var Latitude: String = ""
-    var Longitude: String = ""
+    lateinit var Latitude: String
+    lateinit var Longitude: String
 
     val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -41,8 +39,6 @@ class MainActivity : AppCompatActivity() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         getLastLocation()
-
-        weatherTask().execute()
 
     }
 
@@ -56,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         Latitude = location.latitude.toString()
                         Longitude = location.longitude.toString()
+                        weatherTask().execute()
                     }
                 }
             } else {
@@ -91,11 +88,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        var locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
         )
     }
+
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -114,12 +113,19 @@ class MainActivity : AppCompatActivity() {
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_ID
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLastLocation()
@@ -140,9 +146,8 @@ class MainActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: String?): String? {
             var response: String?
             try {
-                Log.d("Latitude", "$Latitude")
                 response =
-                    URL("api.openweathermap.org/data/2.5/weather?lat=${Latitude}&lon=${Longitude}&units=metric&appid=$API").readText(
+                    URL("https://api.openweathermap.org/data/2.5/weather?lat=${Latitude}&lon=${Longitude}&units=metric&appid=$API").readText(
                         Charsets.UTF_8
                     )
             } catch (e: Exception) {
@@ -153,6 +158,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
+
             try {
                 /* Extracting JSON returns from the API */
                 val jsonObj = JSONObject(result)
