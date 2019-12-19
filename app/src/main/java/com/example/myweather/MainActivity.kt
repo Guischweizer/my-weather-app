@@ -26,7 +26,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    val api: String = "cf2e31a47b54972f5f7f373337350593"
+    val api: String = ""
     lateinit var latitude: String
     lateinit var longitude: String
 
@@ -161,7 +161,6 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("DefaultLocale")
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-
             try {
                 /* Extracting JSON returns from the API */
                 val jsonObj = JSONObject(result)
