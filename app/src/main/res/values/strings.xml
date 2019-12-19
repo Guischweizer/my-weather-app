@@ -14,4 +14,6 @@
     <string name="created_by_text">Created By</string>
     <string name="author">GuiSchweizer</string>
     <string name="error_text">Something went wrong</string>
+    <string name="info_image">Info</string>
+    <string name="images">images</string>
 </resources>
