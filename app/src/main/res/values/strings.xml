@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">MyWeather</string>
+    <string name="city_name">Porto Alegre, BR</string>
+    <string name="updated_at">20 April 2019, 20:08 PM</string>
+    <string name="actual_temperature">29°C</string>
+    <string name="sky_status">Clear Sky</string>
+    <string name="min_temp">Min Temp: 05:05 AM</string>
+    <string name="max_temp">Max Temp: 05:05 PM</string>
+    <string name="sunrise_text">Sunrise</string>
+    <string name="sunset_text">Sunset</string>
+    <string name="wind_text">Wind</string>
+    <string name="pressure_text">Pressure</string>
+    <string name="humidity_text">Humidity</string>
+    <string name="created_by_text">Created By</string>
+    <string name="author">GuiSchweizer</string>
+    <string name="error_text">Something went wrong</string>
 </resources>
