@@ -1,6 +1,7 @@
 package com.example.myweather
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -25,9 +26,9 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    val API: String = "cf2e31a47b54972f5f7f373337350593"
-    lateinit var Latitude: String
-    lateinit var Longitude: String
+    val api: String = "cf2e31a47b54972f5f7f373337350593"
+    lateinit var latitude: String
+    lateinit var longitude: String
 
     val PERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -46,12 +47,12 @@ class MainActivity : AppCompatActivity() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-                    var location: Location? = task.result
+                    val location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
                     } else {
-                        Latitude = location.latitude.toString()
-                        Longitude = location.longitude.toString()
+                        latitude = location.latitude.toString()
+                        longitude = location.longitude.toString()
                         weatherTask().execute()
                     }
                 }
@@ -66,14 +67,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestNewLocationData() {
-        var mLocationRequest = LocationRequest()
+        val mLocationRequest = LocationRequest()
         mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         mLocationRequest.interval = 0
         mLocationRequest.fastestInterval = 0
         mLocationRequest.numUpdates = 1
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient!!.requestLocationUpdates(
+        mFusedLocationClient.requestLocationUpdates(
             mLocationRequest, mLocationCallback,
             Looper.myLooper()
         )
@@ -81,14 +82,14 @@ class MainActivity : AppCompatActivity() {
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
-            Latitude = mLastLocation.latitude.toString()
-            Longitude = mLastLocation.longitude.toString()
+            val mLastLocation: Location = locationResult.lastLocation
+            latitude = mLastLocation.latitude.toString()
+            longitude = mLastLocation.longitude.toString()
         }
     }
 
     private fun isLocationEnabled(): Boolean {
-        var locationManager: LocationManager =
+        val locationManager: LocationManager =
             getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
             LocationManager.NETWORK_PROVIDER
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @SuppressLint("StaticFieldLeak")
     inner class weatherTask() : AsyncTask<String, Void, String>() {
         override fun onPreExecute() {
             super.onPreExecute()
@@ -147,7 +149,7 @@ class MainActivity : AppCompatActivity() {
             var response: String?
             try {
                 response =
-                    URL("https://api.openweathermap.org/data/2.5/weather?lat=${Latitude}&lon=${Longitude}&units=metric&appid=$API").readText(
+                    URL("https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=$api").readText(
                         Charsets.UTF_8
                     )
             } catch (e: Exception) {
@@ -156,6 +158,7 @@ class MainActivity : AppCompatActivity() {
             return response
         }
 
+        @SuppressLint("DefaultLocale")
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
 
